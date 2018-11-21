@@ -1,25 +1,38 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { getProjects } from './DATA/projectData'; 
+import IntroLanding from './components/HomeComponents/IntroLanding';
+import Projects from './components/HomeComponents/Projects';
 import './App.css';
 
 class App extends Component {
+  state = {
+    projects: null,
+    loading: true,
+  }
+  componentDidMount() {
+    getProjects().then((results) => {
+      this.setState({
+        projects: results,
+      })
+    }).then(() => {
+      this.setState({
+        loading: false,
+      })
+    })
+  }
   render() {
+    const { loading } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        {this.state.loading
+          ? <p>Loading</p>
+          : (
+            <div>
+              <IntroLanding />
+              <Projects projects={this.state.projects}/>
+            </div>
+          ) 
+          }
       </div>
     );
   }
